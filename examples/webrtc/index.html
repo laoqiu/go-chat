@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebRTC Demo</title>
+    <style type="text/css">
+        #theirs{
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            width: 500px;
+        }
+        #yours{
+            position: absolute;
+            top: 120px;
+            left: 480px;
+            width: 100px;
+            z-index: 9999;
+            border:1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<video id="yours" autoplay></video>
+<video id="theirs" autoplay></video>
+</body>
+<script type="text/javascript" src="./main.js"></script>
+</html>

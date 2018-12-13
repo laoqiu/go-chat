@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package go.micro.srv.chat;
+
+service Chat {
+    rpc Users(UsersRequest) returns (UsersResponse) {}
+    rpc Rooms(RoomsRequest) returns (RoomsResponse) {}
+    rpc Join(JoinRequest) returns (JoinResponse) {}
+    rpc Out(OutRequest) returns (OutResponse) {}
+    rpc Send(SendRequest) returns (SendResponse) {}
+    rpc Stream(StreamRequest) returns (stream StreamResponse) {}
+}
+
+message UsersRequest {
+    string id = 1;
+}
+
+message UsersResponse {
+    repeated User users = 1;
+}
+
+message RoomsRequest {
+    string id = 1;
+}
+
+message RoomsResponse {
+    repeated Room rooms = 1;
+}
+
+message JoinRequest {
+    string id = 1;
+    string roomId = 2;
+}
+
+message JoinResponse {}
+
+message OutRequest {
+    string id = 1;
+    string roomId = 2;
+}
+
+message OutResponse {} 
+
+message SendRequest {
+    Event event = 1;
+}
+
+message SendResponse {
+    string message_id = 1;
+}
+
+message StreamRequest {
+    string id = 1;
+    int64 last_created = 2;
+}
+
+message StreamResponse {
+    Event event = 1;
+}
+
+message Event {
+    string type = 1;
+    string from = 2;
+    string to = 3;
+    string body = 4; 
+    int64 created = 5;
+}
+
+message Room {
+    string id = 1;
+    string name = 2;
+}
+
+message User {
+    string id = 1;
+    string name = 2;
+}
