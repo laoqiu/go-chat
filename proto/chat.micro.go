@@ -8,6 +8,10 @@ It is generated from these files:
 	proto/chat.proto
 
 It has these top-level messages:
+	RegisterRequest
+	RegisterResponse
+	UnregisterRequest
+	UnregisterResponse
 	UsersRequest
 	UsersResponse
 	RoomsRequest
@@ -23,6 +27,7 @@ It has these top-level messages:
 	Event
 	Room
 	User
+	Client
 */
 package go_micro_srv_chat
 
@@ -55,6 +60,8 @@ var _ server.Option
 // Client API for Chat service
 
 type ChatService interface {
+	Register(ctx context.Context, in *RegisterRequest, opts ...client.CallOption) (*RegisterResponse, error)
+	Unregister(ctx context.Context, in *UnregisterRequest, opts ...client.CallOption) (*UnregisterResponse, error)
 	Users(ctx context.Context, in *UsersRequest, opts ...client.CallOption) (*UsersResponse, error)
 	Rooms(ctx context.Context, in *RoomsRequest, opts ...client.CallOption) (*RoomsResponse, error)
 	Join(ctx context.Context, in *JoinRequest, opts ...client.CallOption) (*JoinResponse, error)
@@ -79,6 +86,26 @@ func NewChatService(name string, c client.Client) ChatService {
 		c:    c,
 		name: name,
 	}
+}
+
+func (c *chatService) Register(ctx context.Context, in *RegisterRequest, opts ...client.CallOption) (*RegisterResponse, error) {
+	req := c.c.NewRequest(c.name, "Chat.Register", in)
+	out := new(RegisterResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatService) Unregister(ctx context.Context, in *UnregisterRequest, opts ...client.CallOption) (*UnregisterResponse, error) {
+	req := c.c.NewRequest(c.name, "Chat.Unregister", in)
+	out := new(UnregisterResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *chatService) Users(ctx context.Context, in *UsersRequest, opts ...client.CallOption) (*UsersResponse, error) {
@@ -178,6 +205,8 @@ func (x *chatServiceStream) Recv() (*StreamResponse, error) {
 // Server API for Chat service
 
 type ChatHandler interface {
+	Register(context.Context, *RegisterRequest, *RegisterResponse) error
+	Unregister(context.Context, *UnregisterRequest, *UnregisterResponse) error
 	Users(context.Context, *UsersRequest, *UsersResponse) error
 	Rooms(context.Context, *RoomsRequest, *RoomsResponse) error
 	Join(context.Context, *JoinRequest, *JoinResponse) error
@@ -188,6 +217,8 @@ type ChatHandler interface {
 
 func RegisterChatHandler(s server.Server, hdlr ChatHandler, opts ...server.HandlerOption) error {
 	type chat interface {
+		Register(ctx context.Context, in *RegisterRequest, out *RegisterResponse) error
+		Unregister(ctx context.Context, in *UnregisterRequest, out *UnregisterResponse) error
 		Users(ctx context.Context, in *UsersRequest, out *UsersResponse) error
 		Rooms(ctx context.Context, in *RoomsRequest, out *RoomsResponse) error
 		Join(ctx context.Context, in *JoinRequest, out *JoinResponse) error
@@ -204,6 +235,14 @@ func RegisterChatHandler(s server.Server, hdlr ChatHandler, opts ...server.Handl
 
 type chatHandler struct {
 	ChatHandler
+}
+
+func (h *chatHandler) Register(ctx context.Context, in *RegisterRequest, out *RegisterResponse) error {
+	return h.ChatHandler.Register(ctx, in, out)
+}
+
+func (h *chatHandler) Unregister(ctx context.Context, in *UnregisterRequest, out *UnregisterResponse) error {
+	return h.ChatHandler.Unregister(ctx, in, out)
 }
 
 func (h *chatHandler) Users(ctx context.Context, in *UsersRequest, out *UsersResponse) error {

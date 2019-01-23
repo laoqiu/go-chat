@@ -2,36 +2,96 @@ package gochat
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
+	"strings"
+	"time"
 
 	proto "github.com/laoqiu/go-chat/proto"
-	micro "github.com/micro/go-micro"
+	"github.com/micro/go-micro/broker"
+	"github.com/nats-io/nats-streaming-server/server"
+	uuid "github.com/satori/go.uuid"
 )
 
 type Handler struct {
-	db  DB
-	hub *Hub
-	pub micro.Publisher
+	service string
+	repo    Repository
+	hub     *Hub
+	broker  broker.Broker
 }
 
-func NewHandler(db DB, hub *Hub, pub micro.Publisher) *Handler {
+func NewHandler(service string, repo Repository, hub *Hub, broker broker.Broker) *Handler {
 	return &Handler{
-		db:  db,
-		hub: hub,
-		pub: pub,
+		service: service,
+		repo:    repo,
+		hub:     hub,
+		broker:  broker,
 	}
 }
 
-func NewSubscriber(hub *Hub) func(ctx context.Context, event *proto.Event) error {
-	return func(ctx context.Context, event *proto.Event) error {
-		hub.received <- event
-		return nil
+func (h *Handler) Register(ctx context.Context, req *proto.RegisterRequest, rsp *proto.RegisterResponse) error {
+	// 创建用户
+	if err := h.repo.CreateUser(req.User); err != nil {
+		return err
 	}
+
+	// 注册队列: 如果不注册将无法收到执久化消息
+	conn := NewConn(h.service, req.User.Id, MasterPlatform, 0, nil)
+	if err := conn.Init(); err != nil {
+		return err
+	}
+	defer conn.Close()
+	if _, err := conn.Subscribe(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (h *Handler) Unregister(ctx context.Context, req *proto.UnregisterRequest, rsp *proto.UnregisterResponse) error {
+	// 查询用户
+	// if _, err := h.repo.GetUser(req.Id); err != nil {
+	// 	return err
+	// }
+
+	// 通知所有平台下线
+	body, _ := json.Marshal(map[string]interface{}{
+		"id":       req.Id,
+		"platform": "all",
+	})
+	// 发送强制下线消息给所有srv
+	if err := h.broker.Publish(h.service, &broker.Message{
+		Body: body,
+	}); err != nil {
+		fmt.Println("stream publish err", err)
+		return err
+	}
+
+	// 删除用户
+	if err := h.repo.DeleteUser(req.Id); err != nil {
+		return err
+	}
+
+	// 连上队列后执行退订
+	conn := NewConn(h.service, req.Id, MasterPlatform, 0, nil)
+	if err := conn.Init(); err != nil {
+		return err
+	}
+	defer conn.Close()
+	sub, err := conn.Subscribe()
+	if err != nil {
+		return err
+	}
+	// 退订
+	defer sub.Unsubscribe()
+
+	return nil
 }
 
 func (h *Handler) Users(ctx context.Context, req *proto.UsersRequest, rsp *proto.UsersResponse) error {
-	users, err := h.db.RequestUsers(req.Id)
+	users, err := h.repo.RequestUsers(req.Id)
 	if err != nil {
 		return err
 	}
@@ -40,7 +100,7 @@ func (h *Handler) Users(ctx context.Context, req *proto.UsersRequest, rsp *proto
 }
 
 func (h *Handler) Rooms(ctx context.Context, req *proto.RoomsRequest, rsp *proto.RoomsResponse) error {
-	rooms, err := h.db.RequestRooms(req.Id)
+	rooms, err := h.repo.RequestRooms(req.Id)
 	if err != nil {
 		return err
 	}
@@ -49,30 +109,55 @@ func (h *Handler) Rooms(ctx context.Context, req *proto.RoomsRequest, rsp *proto
 }
 
 func (h *Handler) Join(ctx context.Context, req *proto.JoinRequest, rsp *proto.JoinResponse) error {
-	if err := h.db.Join(req.Id, req.RoomId); err != nil {
+
+	if err := h.repo.Join(req.Id, req.RoomId); err != nil {
 		return err
 	}
-	if err := h.pub.Publish(ctx, &proto.Event{
+
+	members, err := h.repo.Members(req.RoomId, false)
+	if err != nil {
+		return err
+	}
+
+	event, _ := json.Marshal(&proto.Event{
 		Type: "join",
 		From: req.Id,
 		To:   req.RoomId,
-	}); err != nil {
-		return err
+	})
+
+	for _, m := range members {
+		topic := h.service + "." + m.Id
+		if err := h.broker.Publish(topic, &broker.Message{Body: event}); err != nil {
+			fmt.Println("DEBUG ->", err)
+		}
 	}
+
 	return nil
 }
 
 func (h *Handler) Out(ctx context.Context, req *proto.OutRequest, rsp *proto.OutResponse) error {
-	if err := h.db.Out(req.Id, req.RoomId); err != nil {
+	if err := h.repo.Out(req.Id, req.RoomId); err != nil {
 		return err
 	}
-	if err := h.pub.Publish(ctx, &proto.Event{
+
+	managers, err := h.repo.Members(req.RoomId, true)
+	if err != nil {
+		return err
+	}
+
+	event, _ := json.Marshal(&proto.Event{
 		Type: "out",
 		From: req.Id,
 		To:   req.RoomId,
-	}); err != nil {
-		return err
+	})
+
+	for _, m := range managers {
+		topic := h.service + "." + m.Id
+		if err := h.broker.Publish(topic, &broker.Message{Body: event}); err != nil {
+			fmt.Println("DEBUG ->", err)
+		}
 	}
+
 	return nil
 }
 
@@ -82,94 +167,125 @@ func (h *Handler) Send(ctx context.Context, req *proto.SendRequest, rsp *proto.S
 	if !in(AcceptEvent, req.Event.Type) {
 		return errors.New("不能接受的消息类型")
 	}
-	lastid, err := h.db.Write(req.Event)
+
+	if len(req.Event.Id) == 0 {
+		u1, _ := uuid.NewV4()
+		req.Event.Id = strings.Replace(u1.String(), "-", "", -1)
+	}
+
+	event, err := json.Marshal(req.Event)
 	if err != nil {
 		return err
 	}
-	if err := h.pub.Publish(ctx, req.Event); err != nil {
-		h.db.Remove(lastid)
+
+	roomId, to := splitDest(req.Event.To)
+
+	if len(roomId) > 0 {
+		members, err := h.repo.Members(roomId, false)
+		if err != nil {
+			return err
+		}
+		for _, m := range members {
+			topic := h.service + "." + m.Id
+			if err := h.broker.Publish(topic, &broker.Message{Body: event}); err != nil {
+				fmt.Println("Publish DEBUG ->", err)
+			}
+		}
+	} else {
+		// 判断用户是否存在
+		if _, err := h.repo.GetUser(to); err != nil {
+			return err
+		}
+
+		topic := h.service + "." + to
+		if err := h.broker.Publish(topic, &broker.Message{Body: event}); err != nil {
+			return err
+		}
+	}
+
+	// 同时合并消息发送一条给管理后台订阅
+	adminTopic := h.service + "." + "admin"
+	if err := h.broker.Publish(adminTopic, &broker.Message{Body: event}); err != nil {
 		return err
 	}
-	rsp.MessageId = lastid
+
+	// 返回id
+	rsp.Id = req.Event.Id
+
 	return nil
 }
 
 func (h *Handler) Stream(ctx context.Context, req *proto.StreamRequest, stream proto.Chat_StreamStream) error {
-
-	cl := NewConn(req.Id, h.hub, stream)
-	if err := cl.Init(h.db); err != nil {
+	var (
+		retry int
+	)
+	// 验证
+	if err := req.Validate(); err != nil {
 		return err
 	}
 
-	defer func() {
-		h.hub.unregister <- cl
-		h.Offline(ctx, req.Id) // 离线
-	}()
+	// 用户是否存在
+	if _, err := h.repo.GetUser(req.Id); err != nil {
+		return err
+	}
 
-	h.hub.register <- cl
+	// 检查用户所有平台登录情况
+	current, err := h.repo.AvailableClient(req.Id, req.Platform)
+	if err != nil {
+		return err
+	}
+
+	// 处理用户平台冲突强制下线逻辑
+	if current.IsOnline {
+		body, _ := json.Marshal(map[string]interface{}{
+			"id":       current.Id,
+			"platform": current.Platform,
+		})
+		// 发送强制下线消息给所有srv
+		if err := h.broker.Publish(h.service, &broker.Message{
+			Body: body,
+		}); err != nil {
+			fmt.Println("stream publish err", err)
+			return err
+		}
+	}
+
+	// 初始化
+	conn := NewConn(h.service, req.Id, req.Platform, req.Start, stream)
+
+	retry = 0
+	for {
+		if err := conn.Init(); err != nil {
+			if err == server.ErrInvalidClient {
+				// 同步等待200毫秒
+				time.Sleep(200 * time.Millisecond)
+				retry = retry + 1
+				if retry > 3 {
+					return err
+				}
+			}
+			return err
+		} else {
+			break
+		}
+	}
+	defer conn.Close()
+
+	if _, err := conn.Subscribe(); err != nil {
+		fmt.Println("subscribe err", err)
+		return err
+	}
+
+	// 加入hub管理
+	h.hub.Register(conn)
+	defer h.hub.Unregister(conn)
 
 	// 在线
-	if err := h.Online(ctx, req.Id); err != nil {
+	if err := h.repo.Online(req.Id, req.Platform); err != nil {
 		return err
 	}
+	defer h.repo.Offline(req.Id, req.Platform)
 
-	// 异步读取离线消息，防止send通道阻塞
-	go func() {
-		events, err := h.db.Read(req.Id, req.LastCreated)
-		if err != nil {
-			log.Println("!!err", err)
-			return
-		}
-		log.Println("read events number:", len(events))
-		for _, v := range events {
-			cl.send <- v
-		}
-	}()
-
-	// 运行
-	cl.Run()
-
+	conn.Run()
 	return nil
-}
-
-func (h *Handler) Offline(ctx context.Context, id string) error {
-	if err := h.db.Offline(id); err != nil {
-		return err
-	}
-	if err := h.pub.Publish(ctx, &proto.Event{
-		Type: "offline",
-		From: id,
-	}); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (h *Handler) Online(ctx context.Context, id string) error {
-	if err := h.db.Online(id); err != nil {
-		return err
-	}
-	if err := h.pub.Publish(ctx, &proto.Event{
-		Type: "online",
-		From: id,
-	}); err != nil {
-		return err
-	}
-	return nil
-}
-
-func getRoomId(items []*proto.Room) []string {
-	rooms := make([]string, len(items))
-	for i, v := range items {
-		rooms[i] = v.Id
-	}
-	return rooms
-}
-
-func getUserId(items []*proto.User) []string {
-	users := make([]string, len(items))
-	for i, v := range items {
-		users[i] = v.Id
-	}
-	return users
 }

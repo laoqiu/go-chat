@@ -1,67 +1,54 @@
 package gochat
 
 import (
+	"encoding/json"
 	"log"
 
-	proto "github.com/laoqiu/go-chat/proto"
+	"github.com/micro/go-micro/broker"
 )
 
 type Hub struct {
-	clients    map[*Conn]bool
-	send       chan *proto.Event
-	received   chan *proto.Event
-	register   chan *Conn
-	unregister chan *Conn
+	service string
+	broker  broker.Broker
+	clients map[*Conn]bool
 }
 
-func NewHub() *Hub {
+func NewHub(service string, broker broker.Broker) *Hub {
 	return &Hub{
-		received:   make(chan *proto.Event),
-		register:   make(chan *Conn),
-		unregister: make(chan *Conn),
-		clients:    make(map[*Conn]bool),
+		service: service,
+		broker:  broker,
+		clients: make(map[*Conn]bool),
 	}
 }
 
-func (h *Hub) Run() {
-	for {
-		select {
-		case client := <-h.register:
-			log.Println("register")
-			h.clients[client] = true
-		case client := <-h.unregister:
-			log.Println("unregister")
-			if _, ok := h.clients[client]; ok {
-				delete(h.clients, client)
-				close(client.send)
-			}
-		case event := <-h.received:
-			log.Println("hub received ->", event)
-			switch event.Type {
-			case "message", "receipt", "candidate", "sdp":
-				for client := range h.clients {
-					roomId, userId := splitDest(event.To)
-					if userId == client.id || (event.Type == "message" && in(client.rooms, roomId)) {
-						client.send <- event
-					}
-				}
-			case "join", "out":
-				for client := range h.clients {
-					if client.id == event.From {
-						if event.Type == "join" {
-							client.rooms = append(client.rooms, event.To)
-						} else {
-							client.rooms = remove(client.rooms, event.To)
-						}
-					}
-				}
-			case "online", "offline":
-				for client := range h.clients {
-					if in(client.users, event.From) {
-						client.send <- event
-					}
-				}
-			}
+func (h *Hub) Register(conn *Conn) {
+	log.Println("hub register", conn.id, conn.platform)
+	h.clients[conn] = true
+}
+
+func (h *Hub) Unregister(conn *Conn) {
+	log.Println("hub unregister")
+	delete(h.clients, conn)
+}
+
+func (h *Hub) Subscribe() (broker.Subscriber, error) {
+	return h.broker.Subscribe(h.service, func(p broker.Publication) error {
+		log.Println("[hub] received message:", string(p.Message().Body), "header", p.Message().Header)
+		data := map[string]interface{}{}
+		if err := json.Unmarshal(p.Message().Body, &data); err != nil {
+			return err
+		}
+		// 处理强制下线逻辑
+		h.shutdown(data["id"].(string), data["platform"].(string))
+		return nil
+	})
+}
+
+func (h *Hub) shutdown(id, platform string) {
+	for client := range h.clients {
+		// platform为all时强制下线所有客户端
+		if client.id == id && (platform == "all" || client.platform == platform) {
+			client.done <- 1
 		}
 	}
 }

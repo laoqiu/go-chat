@@ -1,19 +1,21 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/gorilla/websocket"
 	proto "github.com/laoqiu/go-chat/proto"
 )
 
 var (
-	username, to, body string
-	addr               string = "localhost:50627"
+	id, to, body string
+	addr         string = "localhost:8082"
 )
 
 func main() {
@@ -23,7 +25,7 @@ func main() {
 	recv := make(chan *proto.Event)
 	send := make(chan *proto.Event)
 
-	u := url.URL{Scheme: "ws", Host: addr, Path: "/stream"}
+	u := url.URL{Scheme: "ws", Host: addr, Path: "/chat/stream"}
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
 		log.Fatal("dial:", err)
@@ -31,11 +33,17 @@ func main() {
 	defer c.Close()
 
 	fmt.Println("用户名:")
-	fmt.Scanln(&username)
+	fmt.Scanln(&id)
 
+	d, _ := json.Marshal(map[string]interface{}{
+		"id":       id,
+		"platform": "mobile",
+		"start":    time.Now().Unix(),
+	})
 	if err := c.WriteJSON(&proto.Event{
 		Type: "auth",
-		From: username,
+		From: id,
+		Body: string(d),
 	}); err != nil {
 		log.Println(err)
 	}

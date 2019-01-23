@@ -15,9 +15,9 @@ const (
 // A Client represents the connection between the application to the HipChat
 // service.
 type Client struct {
-	Username string
-	Password string
-	Id       string
+	Id          string
+	MentionName string
+	Password    string
 
 	// private
 	connection      *websocket.Conn
@@ -29,18 +29,18 @@ type Client struct {
 
 // A Message represents a message received from HipChat.
 type Message struct {
-	From string
-	To   string
-	Body string
-	Type string
-	//MentionName string
+	From        string
+	To          string
+	Body        string
+	Type        string
+	MentionName string
 }
 
 // A User represents a member of the HipChat service.
 type User struct {
-	Id   string
-	Name string
-	//MentionName string
+	Id          string
+	Name        string
+	MentionName string
 }
 
 // A Room represents a room in HipChat the Client can join to communicate with
@@ -50,18 +50,17 @@ type Room struct {
 	Name string
 }
 
-func NewClient(user, pass string) (*Client, error) {
-	return NewClientWithServerInfo(user, pass, defaultHost, defaultPath)
+func NewClient(id, pass string) (*Client, error) {
+	return NewClientWithServerInfo(id, pass, defaultHost, defaultPath)
 }
 
-func NewClientWithServerInfo(user, pass, host, path string) (*Client, error) {
+func NewClientWithServerInfo(id, pass, host, path string) (*Client, error) {
 	u := url.URL{Scheme: "ws", Host: host, Path: path}
 	connection, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 
 	c := &Client{
-		Username: user,
+		Id:       id,
 		Password: pass,
-		Id:       user + "@" + host,
 
 		// private
 		connection:      connection,

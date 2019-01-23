@@ -18,6 +18,142 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+type RegisterRequest struct {
+	User                 *User    `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RegisterRequest) Reset()         { *m = RegisterRequest{} }
+func (m *RegisterRequest) String() string { return proto.CompactTextString(m) }
+func (*RegisterRequest) ProtoMessage()    {}
+func (*RegisterRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_chat_95643672631b59e8, []int{0}
+}
+func (m *RegisterRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RegisterRequest.Unmarshal(m, b)
+}
+func (m *RegisterRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RegisterRequest.Marshal(b, m, deterministic)
+}
+func (dst *RegisterRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RegisterRequest.Merge(dst, src)
+}
+func (m *RegisterRequest) XXX_Size() int {
+	return xxx_messageInfo_RegisterRequest.Size(m)
+}
+func (m *RegisterRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RegisterRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RegisterRequest proto.InternalMessageInfo
+
+func (m *RegisterRequest) GetUser() *User {
+	if m != nil {
+		return m.User
+	}
+	return nil
+}
+
+type RegisterResponse struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RegisterResponse) Reset()         { *m = RegisterResponse{} }
+func (m *RegisterResponse) String() string { return proto.CompactTextString(m) }
+func (*RegisterResponse) ProtoMessage()    {}
+func (*RegisterResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_chat_95643672631b59e8, []int{1}
+}
+func (m *RegisterResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RegisterResponse.Unmarshal(m, b)
+}
+func (m *RegisterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RegisterResponse.Marshal(b, m, deterministic)
+}
+func (dst *RegisterResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RegisterResponse.Merge(dst, src)
+}
+func (m *RegisterResponse) XXX_Size() int {
+	return xxx_messageInfo_RegisterResponse.Size(m)
+}
+func (m *RegisterResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_RegisterResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RegisterResponse proto.InternalMessageInfo
+
+type UnregisterRequest struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UnregisterRequest) Reset()         { *m = UnregisterRequest{} }
+func (m *UnregisterRequest) String() string { return proto.CompactTextString(m) }
+func (*UnregisterRequest) ProtoMessage()    {}
+func (*UnregisterRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_chat_95643672631b59e8, []int{2}
+}
+func (m *UnregisterRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UnregisterRequest.Unmarshal(m, b)
+}
+func (m *UnregisterRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UnregisterRequest.Marshal(b, m, deterministic)
+}
+func (dst *UnregisterRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnregisterRequest.Merge(dst, src)
+}
+func (m *UnregisterRequest) XXX_Size() int {
+	return xxx_messageInfo_UnregisterRequest.Size(m)
+}
+func (m *UnregisterRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnregisterRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UnregisterRequest proto.InternalMessageInfo
+
+func (m *UnregisterRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+type UnregisterResponse struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UnregisterResponse) Reset()         { *m = UnregisterResponse{} }
+func (m *UnregisterResponse) String() string { return proto.CompactTextString(m) }
+func (*UnregisterResponse) ProtoMessage()    {}
+func (*UnregisterResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_chat_95643672631b59e8, []int{3}
+}
+func (m *UnregisterResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UnregisterResponse.Unmarshal(m, b)
+}
+func (m *UnregisterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UnregisterResponse.Marshal(b, m, deterministic)
+}
+func (dst *UnregisterResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnregisterResponse.Merge(dst, src)
+}
+func (m *UnregisterResponse) XXX_Size() int {
+	return xxx_messageInfo_UnregisterResponse.Size(m)
+}
+func (m *UnregisterResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnregisterResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UnregisterResponse proto.InternalMessageInfo
+
 type UsersRequest struct {
 	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -29,7 +165,7 @@ func (m *UsersRequest) Reset()         { *m = UsersRequest{} }
 func (m *UsersRequest) String() string { return proto.CompactTextString(m) }
 func (*UsersRequest) ProtoMessage()    {}
 func (*UsersRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{0}
+	return fileDescriptor_chat_95643672631b59e8, []int{4}
 }
 func (m *UsersRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UsersRequest.Unmarshal(m, b)
@@ -67,7 +203,7 @@ func (m *UsersResponse) Reset()         { *m = UsersResponse{} }
 func (m *UsersResponse) String() string { return proto.CompactTextString(m) }
 func (*UsersResponse) ProtoMessage()    {}
 func (*UsersResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{1}
+	return fileDescriptor_chat_95643672631b59e8, []int{5}
 }
 func (m *UsersResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UsersResponse.Unmarshal(m, b)
@@ -105,7 +241,7 @@ func (m *RoomsRequest) Reset()         { *m = RoomsRequest{} }
 func (m *RoomsRequest) String() string { return proto.CompactTextString(m) }
 func (*RoomsRequest) ProtoMessage()    {}
 func (*RoomsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{2}
+	return fileDescriptor_chat_95643672631b59e8, []int{6}
 }
 func (m *RoomsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RoomsRequest.Unmarshal(m, b)
@@ -143,7 +279,7 @@ func (m *RoomsResponse) Reset()         { *m = RoomsResponse{} }
 func (m *RoomsResponse) String() string { return proto.CompactTextString(m) }
 func (*RoomsResponse) ProtoMessage()    {}
 func (*RoomsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{3}
+	return fileDescriptor_chat_95643672631b59e8, []int{7}
 }
 func (m *RoomsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RoomsResponse.Unmarshal(m, b)
@@ -182,7 +318,7 @@ func (m *JoinRequest) Reset()         { *m = JoinRequest{} }
 func (m *JoinRequest) String() string { return proto.CompactTextString(m) }
 func (*JoinRequest) ProtoMessage()    {}
 func (*JoinRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{4}
+	return fileDescriptor_chat_95643672631b59e8, []int{8}
 }
 func (m *JoinRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_JoinRequest.Unmarshal(m, b)
@@ -226,7 +362,7 @@ func (m *JoinResponse) Reset()         { *m = JoinResponse{} }
 func (m *JoinResponse) String() string { return proto.CompactTextString(m) }
 func (*JoinResponse) ProtoMessage()    {}
 func (*JoinResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{5}
+	return fileDescriptor_chat_95643672631b59e8, []int{9}
 }
 func (m *JoinResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_JoinResponse.Unmarshal(m, b)
@@ -258,7 +394,7 @@ func (m *OutRequest) Reset()         { *m = OutRequest{} }
 func (m *OutRequest) String() string { return proto.CompactTextString(m) }
 func (*OutRequest) ProtoMessage()    {}
 func (*OutRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{6}
+	return fileDescriptor_chat_95643672631b59e8, []int{10}
 }
 func (m *OutRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OutRequest.Unmarshal(m, b)
@@ -302,7 +438,7 @@ func (m *OutResponse) Reset()         { *m = OutResponse{} }
 func (m *OutResponse) String() string { return proto.CompactTextString(m) }
 func (*OutResponse) ProtoMessage()    {}
 func (*OutResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{7}
+	return fileDescriptor_chat_95643672631b59e8, []int{11}
 }
 func (m *OutResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OutResponse.Unmarshal(m, b)
@@ -333,7 +469,7 @@ func (m *SendRequest) Reset()         { *m = SendRequest{} }
 func (m *SendRequest) String() string { return proto.CompactTextString(m) }
 func (*SendRequest) ProtoMessage()    {}
 func (*SendRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{8}
+	return fileDescriptor_chat_95643672631b59e8, []int{12}
 }
 func (m *SendRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendRequest.Unmarshal(m, b)
@@ -361,7 +497,7 @@ func (m *SendRequest) GetEvent() *Event {
 }
 
 type SendResponse struct {
-	MessageId            string   `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -371,7 +507,7 @@ func (m *SendResponse) Reset()         { *m = SendResponse{} }
 func (m *SendResponse) String() string { return proto.CompactTextString(m) }
 func (*SendResponse) ProtoMessage()    {}
 func (*SendResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{9}
+	return fileDescriptor_chat_95643672631b59e8, []int{13}
 }
 func (m *SendResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendResponse.Unmarshal(m, b)
@@ -391,16 +527,17 @@ func (m *SendResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SendResponse proto.InternalMessageInfo
 
-func (m *SendResponse) GetMessageId() string {
+func (m *SendResponse) GetId() string {
 	if m != nil {
-		return m.MessageId
+		return m.Id
 	}
 	return ""
 }
 
 type StreamRequest struct {
 	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	LastCreated          int64    `protobuf:"varint,2,opt,name=last_created,json=lastCreated,proto3" json:"last_created,omitempty"`
+	Platform             string   `protobuf:"bytes,2,opt,name=platform,proto3" json:"platform,omitempty"`
+	Start                int64    `protobuf:"varint,3,opt,name=start,proto3" json:"start,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -410,7 +547,7 @@ func (m *StreamRequest) Reset()         { *m = StreamRequest{} }
 func (m *StreamRequest) String() string { return proto.CompactTextString(m) }
 func (*StreamRequest) ProtoMessage()    {}
 func (*StreamRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{10}
+	return fileDescriptor_chat_95643672631b59e8, []int{14}
 }
 func (m *StreamRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamRequest.Unmarshal(m, b)
@@ -437,9 +574,16 @@ func (m *StreamRequest) GetId() string {
 	return ""
 }
 
-func (m *StreamRequest) GetLastCreated() int64 {
+func (m *StreamRequest) GetPlatform() string {
 	if m != nil {
-		return m.LastCreated
+		return m.Platform
+	}
+	return ""
+}
+
+func (m *StreamRequest) GetStart() int64 {
+	if m != nil {
+		return m.Start
 	}
 	return 0
 }
@@ -455,7 +599,7 @@ func (m *StreamResponse) Reset()         { *m = StreamResponse{} }
 func (m *StreamResponse) String() string { return proto.CompactTextString(m) }
 func (*StreamResponse) ProtoMessage()    {}
 func (*StreamResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{11}
+	return fileDescriptor_chat_95643672631b59e8, []int{15}
 }
 func (m *StreamResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamResponse.Unmarshal(m, b)
@@ -483,11 +627,12 @@ func (m *StreamResponse) GetEvent() *Event {
 }
 
 type Event struct {
-	Type                 string   `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
-	From                 string   `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	To                   string   `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	Body                 string   `protobuf:"bytes,4,opt,name=body,proto3" json:"body,omitempty"`
-	Created              int64    `protobuf:"varint,5,opt,name=created,proto3" json:"created,omitempty"`
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type                 string   `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	From                 string   `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
+	To                   string   `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
+	Body                 string   `protobuf:"bytes,5,opt,name=body,proto3" json:"body,omitempty"`
+	Created              int64    `protobuf:"varint,6,opt,name=created,proto3" json:"created,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -497,7 +642,7 @@ func (m *Event) Reset()         { *m = Event{} }
 func (m *Event) String() string { return proto.CompactTextString(m) }
 func (*Event) ProtoMessage()    {}
 func (*Event) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{12}
+	return fileDescriptor_chat_95643672631b59e8, []int{16}
 }
 func (m *Event) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Event.Unmarshal(m, b)
@@ -516,6 +661,13 @@ func (m *Event) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_Event proto.InternalMessageInfo
+
+func (m *Event) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
 
 func (m *Event) GetType() string {
 	if m != nil {
@@ -564,7 +716,7 @@ func (m *Room) Reset()         { *m = Room{} }
 func (m *Room) String() string { return proto.CompactTextString(m) }
 func (*Room) ProtoMessage()    {}
 func (*Room) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{13}
+	return fileDescriptor_chat_95643672631b59e8, []int{17}
 }
 func (m *Room) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Room.Unmarshal(m, b)
@@ -610,7 +762,7 @@ func (m *User) Reset()         { *m = User{} }
 func (m *User) String() string { return proto.CompactTextString(m) }
 func (*User) ProtoMessage()    {}
 func (*User) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chat_c3051a3975c1a444, []int{14}
+	return fileDescriptor_chat_95643672631b59e8, []int{18}
 }
 func (m *User) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_User.Unmarshal(m, b)
@@ -644,7 +796,65 @@ func (m *User) GetName() string {
 	return ""
 }
 
+type Client struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Platform             string   `protobuf:"bytes,2,opt,name=platform,proto3" json:"platform,omitempty"`
+	IsOnline             bool     `protobuf:"varint,3,opt,name=is_online,json=isOnline,proto3" json:"is_online,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Client) Reset()         { *m = Client{} }
+func (m *Client) String() string { return proto.CompactTextString(m) }
+func (*Client) ProtoMessage()    {}
+func (*Client) Descriptor() ([]byte, []int) {
+	return fileDescriptor_chat_95643672631b59e8, []int{19}
+}
+func (m *Client) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Client.Unmarshal(m, b)
+}
+func (m *Client) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Client.Marshal(b, m, deterministic)
+}
+func (dst *Client) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Client.Merge(dst, src)
+}
+func (m *Client) XXX_Size() int {
+	return xxx_messageInfo_Client.Size(m)
+}
+func (m *Client) XXX_DiscardUnknown() {
+	xxx_messageInfo_Client.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Client proto.InternalMessageInfo
+
+func (m *Client) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *Client) GetPlatform() string {
+	if m != nil {
+		return m.Platform
+	}
+	return ""
+}
+
+func (m *Client) GetIsOnline() bool {
+	if m != nil {
+		return m.IsOnline
+	}
+	return false
+}
+
 func init() {
+	proto.RegisterType((*RegisterRequest)(nil), "go.micro.srv.chat.RegisterRequest")
+	proto.RegisterType((*RegisterResponse)(nil), "go.micro.srv.chat.RegisterResponse")
+	proto.RegisterType((*UnregisterRequest)(nil), "go.micro.srv.chat.UnregisterRequest")
+	proto.RegisterType((*UnregisterResponse)(nil), "go.micro.srv.chat.UnregisterResponse")
 	proto.RegisterType((*UsersRequest)(nil), "go.micro.srv.chat.UsersRequest")
 	proto.RegisterType((*UsersResponse)(nil), "go.micro.srv.chat.UsersResponse")
 	proto.RegisterType((*RoomsRequest)(nil), "go.micro.srv.chat.RoomsRequest")
@@ -660,40 +870,48 @@ func init() {
 	proto.RegisterType((*Event)(nil), "go.micro.srv.chat.Event")
 	proto.RegisterType((*Room)(nil), "go.micro.srv.chat.Room")
 	proto.RegisterType((*User)(nil), "go.micro.srv.chat.User")
+	proto.RegisterType((*Client)(nil), "go.micro.srv.chat.Client")
 }
 
-func init() { proto.RegisterFile("proto/chat.proto", fileDescriptor_chat_c3051a3975c1a444) }
+func init() { proto.RegisterFile("proto/chat.proto", fileDescriptor_chat_95643672631b59e8) }
 
-var fileDescriptor_chat_c3051a3975c1a444 = []byte{
-	// 475 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0x51, 0x6b, 0xdb, 0x30,
-	0x10, 0x8e, 0x63, 0x3b, 0xa3, 0x67, 0x27, 0x6c, 0x7a, 0xd8, 0x8c, 0xa1, 0x69, 0xaa, 0xa7, 0x32,
-	0xa8, 0x37, 0xb2, 0xed, 0x71, 0x63, 0xac, 0x6c, 0x90, 0x31, 0x28, 0x73, 0xd9, 0x73, 0x71, 0x63,
-	0xad, 0x35, 0xcc, 0x56, 0x26, 0xc9, 0x85, 0xfe, 0xce, 0xfd, 0xa1, 0x71, 0x92, 0xdc, 0xba, 0x44,
-	0x0e, 0xcd, 0xdb, 0xe9, 0xee, 0xbb, 0xef, 0x3e, 0xc9, 0xdf, 0x19, 0x9e, 0x6f, 0x04, 0x57, 0xfc,
-	0xcd, 0xfa, 0xa6, 0x50, 0x99, 0x0e, 0xc9, 0x8b, 0x6b, 0x9e, 0xd5, 0xd5, 0x5a, 0xf0, 0x4c, 0x8a,
-	0xdb, 0x0c, 0x0b, 0x74, 0x0e, 0xf1, 0x2f, 0xc9, 0x84, 0xcc, 0xd9, 0xdf, 0x96, 0x49, 0x45, 0x66,
-	0x30, 0xae, 0xca, 0xc4, 0x5b, 0x78, 0x27, 0x07, 0xf9, 0xb8, 0x2a, 0xe9, 0x27, 0x98, 0xda, 0xba,
-	0xdc, 0xf0, 0x46, 0x32, 0x72, 0x0a, 0x61, 0x8b, 0x89, 0xc4, 0x5b, 0xf8, 0x27, 0xd1, 0xf2, 0x55,
-	0xb6, 0xc5, 0x99, 0x61, 0x43, 0x6e, 0x50, 0xc8, 0x9f, 0x73, 0x5e, 0xef, 0xe2, 0xb7, 0xf5, 0x07,
-	0x7e, 0x81, 0x89, 0x1d, 0xfc, 0xd8, 0x90, 0x1b, 0x14, 0xfd, 0x00, 0xd1, 0x77, 0x5e, 0x35, 0x03,
-	0xf4, 0xe4, 0x25, 0x4c, 0x10, 0xb7, 0x2a, 0x93, 0xb1, 0xce, 0xd9, 0x13, 0x9d, 0x41, 0x6c, 0xda,
-	0xcc, 0x54, 0xfa, 0x1e, 0xe0, 0xbc, 0x55, 0xfb, 0xb2, 0x4c, 0x21, 0xd2, 0x5d, 0x96, 0xe4, 0x23,
-	0x44, 0x17, 0xac, 0x29, 0x3b, 0x96, 0x0c, 0x42, 0x76, 0xcb, 0x1a, 0xa5, 0x89, 0xa2, 0x65, 0xe2,
-	0xb8, 0xc9, 0x57, 0xac, 0xe7, 0x06, 0x46, 0x4f, 0x21, 0x36, 0xed, 0xf6, 0x25, 0x0e, 0x01, 0x6a,
-	0x26, 0x65, 0x71, 0xcd, 0x2e, 0xef, 0xd5, 0x1c, 0xd8, 0xcc, 0xaa, 0xa4, 0x5f, 0x60, 0x7a, 0xa1,
-	0x04, 0x2b, 0xea, 0x21, 0xd5, 0xc7, 0x10, 0xff, 0x29, 0xa4, 0xba, 0x5c, 0x0b, 0x56, 0x28, 0x66,
-	0xb4, 0xfb, 0x79, 0x84, 0xb9, 0x33, 0x93, 0xa2, 0x9f, 0x61, 0xd6, 0x71, 0xd8, 0xa1, 0xfb, 0x8a,
-	0xae, 0x21, 0xd4, 0x67, 0x42, 0x20, 0x50, 0x77, 0x1b, 0x66, 0xe7, 0xeb, 0x18, 0x73, 0xbf, 0x05,
-	0xaf, 0xed, 0xab, 0xe9, 0x18, 0x55, 0x2a, 0x9e, 0xf8, 0x46, 0xa5, 0xe2, 0x88, 0xb9, 0xe2, 0xe5,
-	0x5d, 0x12, 0x18, 0x0c, 0xc6, 0x24, 0x81, 0x67, 0x9d, 0xe8, 0x50, 0x8b, 0xee, 0x8e, 0xf4, 0x35,
-	0x04, 0xf8, 0xf5, 0xb7, 0xee, 0x4a, 0x20, 0x68, 0x8a, 0x9a, 0x75, 0x93, 0x30, 0x46, 0x2c, 0x3a,
-	0xf1, 0x29, 0xd8, 0xe5, 0x3f, 0x1f, 0x82, 0xb3, 0x9b, 0x42, 0x91, 0x1f, 0x10, 0x6a, 0xbf, 0x93,
-	0xa3, 0x01, 0x63, 0x77, 0x4e, 0x4e, 0x17, 0xc3, 0x00, 0xeb, 0x87, 0x11, 0xb2, 0x69, 0x77, 0x3b,
-	0xd9, 0xfa, 0x7b, 0xe1, 0x64, 0x7b, 0xb4, 0x18, 0x74, 0x44, 0x56, 0x10, 0xa0, 0x69, 0xc9, 0xdc,
-	0x81, 0xed, 0x2d, 0x41, 0x7a, 0x34, 0x58, 0xbf, 0xa7, 0xfa, 0x06, 0xfe, 0x79, 0xab, 0xc8, 0xa1,
-	0x03, 0xf9, 0xb0, 0x07, 0xe9, 0x7c, 0xa8, 0xdc, 0x97, 0x84, 0x9e, 0x75, 0x4a, 0xea, 0xed, 0x82,
-	0x53, 0x52, 0xdf, 0xec, 0x74, 0x44, 0x7e, 0xc2, 0xc4, 0x78, 0x91, 0xb8, 0xde, 0xe2, 0x91, 0xd5,
-	0xd3, 0xe3, 0x1d, 0x88, 0x8e, 0xf0, 0xad, 0x77, 0x35, 0xd1, 0xbf, 0xbd, 0x77, 0xff, 0x03, 0x00,
-	0x00, 0xff, 0xff, 0x7f, 0x4c, 0x4b, 0xe6, 0x0a, 0x05, 0x00, 0x00,
+var fileDescriptor_chat_95643672631b59e8 = []byte{
+	// 577 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x55, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0xcd, 0x87, 0x6d, 0x92, 0x49, 0x13, 0xda, 0x55, 0x05, 0x96, 0x11, 0x69, 0xd8, 0x82, 0x54,
+	0x81, 0x30, 0xa8, 0xc0, 0x91, 0x0a, 0xa9, 0x02, 0xa9, 0x08, 0x29, 0x8a, 0xab, 0x9c, 0x38, 0x20,
+	0x37, 0xde, 0xb6, 0x96, 0x62, 0x6f, 0xd8, 0xdd, 0x54, 0xea, 0x81, 0x33, 0x7f, 0x1b, 0xed, 0x87,
+	0x13, 0x27, 0x5d, 0x9b, 0xf6, 0x36, 0xe3, 0x79, 0xef, 0xed, 0xdb, 0xc9, 0xce, 0x04, 0x76, 0x17,
+	0x8c, 0x0a, 0xfa, 0x6e, 0x76, 0x1d, 0x8b, 0x50, 0x85, 0x68, 0xef, 0x8a, 0x86, 0x59, 0x3a, 0x63,
+	0x34, 0xe4, 0xec, 0x26, 0x94, 0x05, 0x7c, 0x02, 0x8f, 0x23, 0x72, 0x95, 0x72, 0x41, 0x58, 0x44,
+	0x7e, 0x2f, 0x09, 0x17, 0xe8, 0x0d, 0x38, 0x4b, 0x4e, 0x98, 0xdf, 0x1c, 0x35, 0x8f, 0x7a, 0xc7,
+	0x4f, 0xc3, 0x3b, 0xa4, 0x70, 0xca, 0x09, 0x8b, 0x14, 0x08, 0x23, 0xd8, 0x5d, 0xf3, 0xf9, 0x82,
+	0xe6, 0x9c, 0xe0, 0x43, 0xd8, 0x9b, 0xe6, 0x6c, 0x4b, 0x75, 0x00, 0xad, 0x34, 0x51, 0x9a, 0xdd,
+	0xa8, 0x95, 0x26, 0x78, 0x1f, 0x50, 0x19, 0x64, 0xa8, 0x43, 0xd8, 0x91, 0xe2, 0xbc, 0x8a, 0x75,
+	0x02, 0x7d, 0x53, 0xd7, 0x04, 0xf4, 0x16, 0x5c, 0xe9, 0x83, 0xfb, 0xcd, 0x51, 0xbb, 0xce, 0xad,
+	0x46, 0x49, 0xfd, 0x88, 0xd2, 0xac, 0x4e, 0xdf, 0xd4, 0xd7, 0xfa, 0x4c, 0x7e, 0xa8, 0xd1, 0x97,
+	0x84, 0x48, 0xa3, 0xf0, 0x27, 0xe8, 0x7d, 0xa7, 0x69, 0x5e, 0x21, 0x8f, 0x9e, 0x80, 0x27, 0x71,
+	0x67, 0x89, 0xdf, 0x52, 0xdf, 0x4c, 0x86, 0x07, 0xb0, 0xa3, 0x69, 0xa6, 0x0d, 0x1f, 0x01, 0xc6,
+	0x4b, 0xf1, 0x50, 0x95, 0x3e, 0xf4, 0x14, 0xcb, 0x88, 0x7c, 0x86, 0xde, 0x39, 0xc9, 0x93, 0x42,
+	0x25, 0x04, 0x97, 0xdc, 0x90, 0x5c, 0x98, 0xdf, 0xd5, 0xb7, 0xdc, 0xe4, 0xab, 0xac, 0x47, 0x1a,
+	0x26, 0x5b, 0xa5, 0xe9, 0xa6, 0x13, 0xdb, 0xad, 0x9a, 0x40, 0xff, 0x5c, 0x30, 0x12, 0x67, 0x55,
+	0x36, 0x03, 0xe8, 0x2c, 0xe6, 0xb1, 0xb8, 0xa4, 0x2c, 0x33, 0x46, 0x57, 0x39, 0xda, 0x07, 0x97,
+	0x8b, 0x98, 0x09, 0xbf, 0x3d, 0x6a, 0x1e, 0xb5, 0x23, 0x9d, 0xe0, 0x2f, 0x30, 0x28, 0x24, 0xcd,
+	0xa1, 0x0f, 0x35, 0xfd, 0x07, 0x5c, 0x95, 0xdf, 0x31, 0x83, 0xc0, 0x11, 0xb7, 0x0b, 0x62, 0x8c,
+	0xa8, 0x58, 0x7e, 0xbb, 0x64, 0x34, 0x53, 0x1e, 0xba, 0x91, 0x8a, 0x25, 0x4f, 0x50, 0xdf, 0xd1,
+	0x3c, 0x41, 0x25, 0xe6, 0x82, 0x26, 0xb7, 0xbe, 0xab, 0x31, 0x32, 0x46, 0x3e, 0x3c, 0x9a, 0x31,
+	0x12, 0x0b, 0x92, 0xf8, 0x9e, 0xb2, 0x5f, 0xa4, 0xf8, 0x35, 0x38, 0xf2, 0x35, 0xd8, 0x4e, 0xcf,
+	0xe3, 0x6c, 0x75, 0xba, 0x8c, 0x25, 0x56, 0xbe, 0xcc, 0x7b, 0x61, 0x27, 0xe0, 0x9d, 0xce, 0x53,
+	0xdb, 0xbd, 0xea, 0x9a, 0xfc, 0x0c, 0xba, 0x29, 0xff, 0x45, 0xf3, 0x79, 0x9a, 0x13, 0x75, 0xc9,
+	0x4e, 0xd4, 0x49, 0xf9, 0x58, 0xe5, 0xc7, 0x7f, 0x5d, 0x70, 0x4e, 0xaf, 0x63, 0x81, 0xa6, 0xd0,
+	0x29, 0x26, 0x18, 0x61, 0xdb, 0xf3, 0xde, 0x1c, 0xe4, 0xe0, 0xb0, 0x16, 0x63, 0xde, 0x5e, 0x03,
+	0xfd, 0x04, 0x58, 0xcf, 0x37, 0x7a, 0x69, 0x9b, 0xcb, 0xed, 0x1d, 0x11, 0xbc, 0xfa, 0x0f, 0x6a,
+	0x25, 0xfe, 0x03, 0x5c, 0xb5, 0x06, 0xd0, 0x41, 0xc5, 0xbc, 0x17, 0x03, 0x1e, 0x8c, 0xaa, 0x01,
+	0x65, 0x35, 0x35, 0xf4, 0x56, 0xb5, 0xf2, 0xba, 0xb0, 0xaa, 0x6d, 0xec, 0x0b, 0xdc, 0x40, 0x67,
+	0xe0, 0xc8, 0x59, 0x46, 0x43, 0x0b, 0xb6, 0xb4, 0x1b, 0x82, 0x83, 0xca, 0xfa, 0x4a, 0xea, 0x1b,
+	0xb4, 0xc7, 0x4b, 0x81, 0x9e, 0x5b, 0x90, 0xeb, 0xf5, 0x10, 0x0c, 0xab, 0xca, 0x65, 0x4b, 0x72,
+	0x94, 0xad, 0x96, 0x4a, 0x2b, 0xc2, 0x6a, 0xa9, 0xbc, 0x03, 0x70, 0x03, 0x4d, 0xc0, 0xd3, 0x23,
+	0x8a, 0x6c, 0xbd, 0xd8, 0x58, 0x08, 0xc1, 0x8b, 0x1a, 0x44, 0x21, 0xf8, 0xbe, 0x79, 0xe1, 0xa9,
+	0x3f, 0xa7, 0x0f, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff, 0xa9, 0xe3, 0xd8, 0xf1, 0xb0, 0x06, 0x00,
+	0x00,
 }

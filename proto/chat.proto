@@ -3,6 +3,8 @@ syntax = "proto3";
 package go.micro.srv.chat;
 
 service Chat {
+    rpc Register(RegisterRequest) returns (RegisterResponse) {}
+    rpc Unregister(UnregisterRequest) returns (UnregisterResponse) {}
     rpc Users(UsersRequest) returns (UsersResponse) {}
     rpc Rooms(RoomsRequest) returns (RoomsResponse) {}
     rpc Join(JoinRequest) returns (JoinResponse) {}
@@ -10,6 +12,18 @@ service Chat {
     rpc Send(SendRequest) returns (SendResponse) {}
     rpc Stream(StreamRequest) returns (stream StreamResponse) {}
 }
+
+message RegisterRequest {
+    User user = 1;
+}
+
+message RegisterResponse {}
+
+message UnregisterRequest {
+    string id = 1;
+}
+
+message UnregisterResponse {}
 
 message UsersRequest {
     string id = 1;
@@ -46,12 +60,13 @@ message SendRequest {
 }
 
 message SendResponse {
-    string message_id = 1;
+    string id = 1;
 }
 
 message StreamRequest {
     string id = 1;
-    int64 last_created = 2;
+    string platform = 2;
+    int64 start = 3; // 接收时间开始时间，仅限非master队列
 }
 
 message StreamResponse {
@@ -59,11 +74,12 @@ message StreamResponse {
 }
 
 message Event {
-    string type = 1;
-    string from = 2;
-    string to = 3;
-    string body = 4; 
-    int64 created = 5;
+    string id = 1; // 唯一标识
+    string type = 2; // 类型
+    string from = 3; // 发送者
+    string to = 4; // 接收者
+    string body = 5; // 内容
+    int64 created = 6; // 时间
 }
 
 message Room {
@@ -74,4 +90,10 @@ message Room {
 message User {
     string id = 1;
     string name = 2;
+}
+
+message Client {
+    string id = 1;
+    string platform = 2;
+    bool is_online = 3;
 }
